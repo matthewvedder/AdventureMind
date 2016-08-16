@@ -34,6 +34,7 @@ $( document ).ready(function() {
       url: '/reports',
       data: { "lat": lat, "long": lng },
     });
+    getReports()
   }
 
   map.on('click', function(e) {
