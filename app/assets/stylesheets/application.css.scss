@@ -16,4 +16,13 @@
 @import "bootstrap";
 
 
- #mapid { height: 750px; }
+
+
+body {
+  padding-top: 3em;
+  margin-left: -10.7em;
+}
+html, body, #mapid {
+  height: 100%;
+  width: auto;
+}

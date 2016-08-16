@@ -12,12 +12,13 @@
 
   <body>
     <%= render 'layouts/navbar' %>
+
      <div class="container">
       <% flash.each do |key, value| %>
         <div class="alert alert-<%= key %>"><%= value %></div>
       <% end %>
       <%= yield %>
-      <%= debug(params) if Rails.env.development? %>
+      <%= puts debug(params) if Rails.env.development? %>
     </div>
   </body>
 </html>
