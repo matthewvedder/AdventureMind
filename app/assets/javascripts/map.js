@@ -11,7 +11,7 @@ $( document ).ready(function() {
  // geojsonFeature = getReports();
   //console.log(geojsonFeature.latlng)
 
-  $(window).on("resize", function() {
+  $( window ).on("resize", function() {
       $("#mapid").height($(window).height()).width($(window).width());
       map.invalidateSize();
   }).trigger("resize");
@@ -34,12 +34,35 @@ $( document ).ready(function() {
       url: '/reports',
       data: { "lat": lat, "long": lng },
     });
-    getReports()
+  }
+  var popup = L.popup();
+  var createReportForm =
+    "<form method='post' action='createReport' id='createReportForm'>\
+      Title:<br><input type='text' title='firstname'><br>\
+      Report:<br> <input type='text' name='description'>\
+      <input class='click' type='submit' name='submit' value='Create a Report'>\
+    </form>"
+
+  function onMapClick(e) {
+    popup
+      .setLatLng(e.latlng)
+      .setContent(createReportForm)
+      .openOn(map)
+      $("#createReportForm").submit(function(event) {
+        event.preventDefault();
+        createReport(e.latlng.lat, e.latlng.lng);
+        map.closePopup();
+        getReports();
+    });
   }
 
-  map.on('click', function(e) {
-    createReport(e.latlng.lat, e.latlng.lng)
-  });
+
+
+
+
+  map.on('click', onMapClick);
+    //createReport(e.latlng.lat, e.latlng.lng)
+
 
   getReports();
 
