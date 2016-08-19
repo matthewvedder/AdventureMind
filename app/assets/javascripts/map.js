@@ -33,8 +33,12 @@ $( document ).ready(function() {
     $.post({
       url: '/reports',
       data: { "lat": lat, "long": lng },
-    });
-  }
+    })
+      .done(function() {
+        getReports();
+      });
+  };
+
   var popup = L.popup();
   var createReportForm =
     "<form method='post' action='createReport' id='createReportForm'>\
@@ -52,12 +56,8 @@ $( document ).ready(function() {
         event.preventDefault();
         createReport(e.latlng.lat, e.latlng.lng);
         map.closePopup();
-        getReports();
     });
   }
-
-
-
 
 
   map.on('click', onMapClick);
