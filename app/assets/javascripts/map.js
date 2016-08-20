@@ -21,7 +21,7 @@ $( document ).ready(function() {
       dataType: 'text',
       url: '/reports',
       success:function(reports) {
-        L.geoJson(JSON.parse(reports)).addTo(map);
+        addReports(reports);
       },
       error:function() {
         alert("Could not load the reports");
@@ -29,20 +29,28 @@ $( document ).ready(function() {
     });
   }
 
-  function createReport(lat,lng) {
+  function addReports(reports) {
+    L.geoJson(JSON.parse(reports), {
+      onEachFeature: function (feature, layer) {
+        layer.bindPopup(feature.properties.title + '<hr>' + feature.properties.description);
+      }
+    }).addTo(map);
+  }
+
+  function createReport(lat,lng,title,description) {
     $.post({
       url: '/reports',
-      data: { "lat": lat, "long": lng },
+      data: { "lat": lat, "long": lng, "title": title, "description": description },
     })
       .done(function() {
         getReports();
       });
-  };
+  }
 
   var popup = L.popup();
   var createReportForm =
-    "<form method='post' action='createReport' id='createReportForm'>\
-      Title:<br><input type='text' title='firstname'><br>\
+    "<form method='post' id='createReportForm'>\
+      Title:<br><input type='text' name='title'><br>\
       Report:<br> <input type='text' name='description'>\
       <input class='click' type='submit' name='submit' value='Create a Report'>\
     </form>"
@@ -54,14 +62,21 @@ $( document ).ready(function() {
       .openOn(map)
       $("#createReportForm").submit(function(event) {
         event.preventDefault();
-        createReport(e.latlng.lat, e.latlng.lng);
+        var reportObject = $( this ).serializeArray();
+        var properties = setProperties(reportObject);
+        createReport(e.latlng.lat, e.latlng.lng, properties[0], properties[1]);
         map.closePopup();
     });
   }
 
+  function setProperties( properties ) {
+    var title = properties[0].value;
+    var description = properties[1].value;
+    return [title, description]
+  }
+
 
   map.on('click', onMapClick);
-    //createReport(e.latlng.lat, e.latlng.lng)
 
 
   getReports();
@@ -72,13 +87,6 @@ $( document ).ready(function() {
     iconAnchor:   [40, 50],
     popupAnchor:  [-100, -76]
   });
-
-
-
-
-
-
-
 
   //L.marker(e.latlng, {icon: hikerIcon}).addTo(map);
   //<%= escape_javascript(render('report')) %>
