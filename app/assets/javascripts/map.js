@@ -8,9 +8,6 @@ $( document ).ready(function() {
       accessToken: 'pk.eyJ1IjoidmVkZHN0ZXIiLCJhIjoiY2lyNzdlanUzMDBza2djbTM1Z2hlYTdnNSJ9.FpydM0KRrrunXzaHJYCmrA'
   }).addTo(map);
 
- // geojsonFeature = getReports();
-  //console.log(geojsonFeature.latlng)
-
   $( window ).on("resize", function() {
       $("#mapid").height($(window).height()).width($(window).width());
       map.invalidateSize();
@@ -87,9 +84,5 @@ $( document ).ready(function() {
     iconAnchor:   [40, 50],
     popupAnchor:  [-100, -76]
   });
-
-  //L.marker(e.latlng, {icon: hikerIcon}).addTo(map);
-  //<%= escape_javascript(render('report')) %>
-
 
 });
