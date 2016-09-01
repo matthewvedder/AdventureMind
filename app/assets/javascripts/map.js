@@ -26,10 +26,19 @@ $( document ).ready(function() {
     });
   }
 
-  function addReports(reports) {
-    L.geoJson(JSON.parse(reports), {
-      onEachFeature: function (feature, layer) {
+  function onEachFeature(feature, layer) {
+    // does this feature have a property named popupContent?
+    if (feature.properties) {
         layer.bindPopup(feature.properties.title + '<hr>' + feature.properties.description);
+    }
+  }
+
+  function addReports(reports) {
+    var geoJsonLayer = L.geoJson(JSON.parse(reports), {
+      pointToLayer: function (feature, latlng) {
+        var marker = L.marker(latlng, {icon: hikerIcon});
+        marker.bindPopup(feature.properties.title + '<hr>' + feature.properties.description).setLatLng(latlng);
+        return marker;
       }
     }).addTo(map);
   }
@@ -56,7 +65,7 @@ $( document ).ready(function() {
     popup
       .setLatLng(e.latlng)
       .setContent(createReportForm)
-      .openOn(map)
+      .openOn(map);
       $("#createReportForm").submit(function(event) {
         event.preventDefault();
         var reportObject = $( this ).serializeArray();
@@ -69,7 +78,7 @@ $( document ).ready(function() {
   function setProperties( properties ) {
     var title = properties[0].value;
     var description = properties[1].value;
-    return [title, description]
+    return [title, description];
   }
 
 
@@ -82,7 +91,7 @@ $( document ).ready(function() {
     iconUrl: 'http://campflyer.com/media/catalog/category/icon_hiker.png',
     iconSize:     [70, 55],
     iconAnchor:   [40, 50],
-    popupAnchor:  [-100, -76]
+    popupAnchor:  [0, -40]
   });
 
 });
