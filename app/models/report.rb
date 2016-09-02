@@ -11,7 +11,9 @@ class Report < ApplicationRecord
       },
       "properties": {
         "title": report.title,
-        "description": report.description
+        "description": report.description,
+        "activity": report.activity,
+        "created_at": report.created_at.strftime("Created On %B %d, %Y")
       }
     }
   end
