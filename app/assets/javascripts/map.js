@@ -37,7 +37,7 @@ $( document ).ready(function() {
     var geoJsonLayer = L.geoJson(JSON.parse(reports), {
       pointToLayer: function (feature, latlng) {
         var marker = L.marker(latlng, {icon: hikerIcon});
-        marker.bindPopup(feature.properties.title + '<hr>' + feature.properties.description).setLatLng(latlng);
+        marker.bindPopup(feature.properties.title + '<hr>' + feature.properties.activity + '<hr>' + feature.properties.created_at + '<hr>' + feature.properties.description).setLatLng(latlng);
         return marker;
       }
     }).addTo(map);
@@ -55,11 +55,25 @@ $( document ).ready(function() {
 
   var popup = L.popup();
   var createReportForm =
-    "<form method='post' id='createReportForm'>\
-      Title:<br><input type='text' name='title'><br>\
-      Report:<br> <input type='text' name='description'>\
-      <input class='click' type='submit' name='submit' value='Create a Report'>\
-    </form>"
+    '<form method="post" id="createReportForm">\
+      <label for="type">Report Type:</label>\
+      <select class="form-control">\
+        <option value="trail">Trail</option>\
+        <option value="climbing">Climbing</option>\
+        <option value="skiing">Skiing</option>\
+        <option value="paddling">Paddling</option>\
+        <option value="access">Access</option>\
+        <option value="avalanche">Avalanche</option>\
+        <option value="wildlife">Wildlife</option>\
+        <option value="incident">Incident</option>\
+      </select>\
+      <strong>Title</strong>:<br><input type="text" name="title"><br>\
+      <div class="form-group">\
+        <label for="description">Report:</label>\
+        <textarea class="form-control"></textarea>\
+      </div>\
+      <input class="click" type="submit" name="submit" value="Create a Report">\
+    </form>'
 
   function onMapClick(e) {
     popup
@@ -76,8 +90,11 @@ $( document ).ready(function() {
   }
 
   function setProperties( properties ) {
+    console.log(properties);
     var title = properties[0].value;
     var description = properties[1].value;
+    var activity = properties[2].value;
+    var created_at = properties[3].value;
     return [title, description];
   }
 
