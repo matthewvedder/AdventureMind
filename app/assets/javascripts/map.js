@@ -40,7 +40,10 @@ $( document ).ready(function() {
         marker.bindPopup(feature.properties.title + '<hr>' + feature.properties.created_at + '<hr>' + feature.properties.description).setLatLng(latlng);
         return marker;
       }
-    }).addTo(map);
+    });
+    var markers = L.markerClusterGroup();
+    markers.addLayer(geoJsonLayer);
+    markers.addTo(map);
   }
 
   function createReport(lat, lng, title, description, activity) {
