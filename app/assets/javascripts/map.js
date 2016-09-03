@@ -36,17 +36,17 @@ $( document ).ready(function() {
   function addReports(reports) {
     var geoJsonLayer = L.geoJson(JSON.parse(reports), {
       pointToLayer: function (feature, latlng) {
-        var marker = L.marker(latlng, {icon: hikerIcon});
-        marker.bindPopup(feature.properties.title + '<hr>' + feature.properties.activity + '<hr>' + feature.properties.created_at + '<hr>' + feature.properties.description).setLatLng(latlng);
+        var marker = L.marker(latlng, {icon: whichIcon(feature.properties.activity)});
+        marker.bindPopup(feature.properties.title + '<hr>' + feature.properties.created_at + '<hr>' + feature.properties.description).setLatLng(latlng);
         return marker;
       }
     }).addTo(map);
   }
 
-  function createReport(lat,lng,title,description) {
+  function createReport(lat, lng, title, description, activity) {
     $.post({
       url: '/reports',
-      data: { "lat": lat, "long": lng, "title": title, "description": description },
+      data: { "lat": lat, "long": lng, "activity": activity, "title": title, "description": description }
     })
       .done(function() {
         getReports();
@@ -57,7 +57,7 @@ $( document ).ready(function() {
   var createReportForm =
     '<form method="post" id="createReportForm">\
       <label for="type">Report Type:</label>\
-      <select class="form-control">\
+      <select class="form-control" name="activity">\
         <option value="trail">Trail</option>\
         <option value="climbing">Climbing</option>\
         <option value="skiing">Skiing</option>\
@@ -70,7 +70,7 @@ $( document ).ready(function() {
       <strong>Title</strong>:<br><input type="text" name="title"><br>\
       <div class="form-group">\
         <label for="description">Report:</label>\
-        <textarea class="form-control"></textarea>\
+        <textarea class="form-control" name="description"></textarea>\
       </div>\
       <input class="click" type="submit" name="submit" value="Create a Report">\
     </form>'
@@ -84,18 +84,16 @@ $( document ).ready(function() {
         event.preventDefault();
         var reportObject = $( this ).serializeArray();
         var properties = setProperties(reportObject);
-        createReport(e.latlng.lat, e.latlng.lng, properties[0], properties[1]);
+        createReport(e.latlng.lat, e.latlng.lng, properties[0], properties[1], properties[2]);
         map.closePopup();
     });
   }
 
   function setProperties( properties ) {
-    console.log(properties);
-    var title = properties[0].value;
-    var description = properties[1].value;
-    var activity = properties[2].value;
-    var created_at = properties[3].value;
-    return [title, description];
+    var title = properties[1].value;
+    var description = properties[2].value;
+    var activity = properties[0].value;
+    return [title, description, activity];
   }
 
 
@@ -104,11 +102,40 @@ $( document ).ready(function() {
 
   getReports();
 
-  var hikerIcon = L.icon({
-    iconUrl: 'http://campflyer.com/media/catalog/category/icon_hiker.png',
-    iconSize:     [70, 55],
-    iconAnchor:   [40, 50],
-    popupAnchor:  [0, -40]
-  });
+  function whichIcon(activity) {
+    var iconUrl = '';
+    switch(activity) {
+      case "hiking":
+        iconUrl = 'http://campflyer.com/media/catalog/category/icon_hiker.png';
+        break;
+      case "climbing":
+        iconUrl = "https://d30y9cdsu7xlg0.cloudfront.net/png/529-200.png";
+        break;
+      case "skiing":
+        iconUrl = "https://cdn2.iconfinder.com/data/icons/sports-attitudes/1451/skying-512.png";
+        break;
+      case "avalanche":
+        iconUrl = "https://cdn0.iconfinder.com/data/icons/natural-disasters/512/avalanche-512.png";
+        break;
+      case "access":
+        iconUrl = "http://www.stevenscreektrail.org/images/alert_icon.png";
+        break;
+      case "wildlife":
+        iconUrl = "https://cdn0.iconfinder.com/data/icons/animal-traces/128/wolf_one_paw-512.png";
+        break;
+      case "paddling":
+        iconUrl = "https://cdn4.iconfinder.com/data/icons/sports-i/92/21-512.png";
+        break;
+      default:
+        iconUrl = 'http://campflyer.com/media/catalog/category/icon_hiker.png';
+    }
 
+    var icon = L.icon({
+      iconUrl: iconUrl,
+      iconSize:     [70, 55],
+      iconAnchor:   [40, 50],
+      popupAnchor:  [0, -40]
+    });
+    return icon;
+  }
 });

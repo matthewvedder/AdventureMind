@@ -11,7 +11,7 @@ class ReportsController < ApplicationController
   end
 
   def create
-    Report.create!( user_id: 1, activity:'hiking', lat: params[:lat] ,long: params[:long],
+    Report.create!( user_id: 1, activity: params[:activity], lat: params[:lat] ,long: params[:long],
                     title: params[:title], description: params[:description] )
     head :ok
   end
@@ -27,6 +27,6 @@ class ReportsController < ApplicationController
   private
 
     def report_params
-      params.permit(:lat, :long, :title, :description)
+      params.permit(:lat, :long, :title, :description, :activity)
     end
 end
