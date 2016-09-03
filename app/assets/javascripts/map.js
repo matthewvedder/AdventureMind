@@ -1,5 +1,5 @@
 $( document ).ready(function() {
-  var map = L.map('mapid', { zoomControl:false }).setView([42.0000, -97.0000], 4.2);
+  var map = L.map('mapid', { zoomControl:false }).locate({setView: true, maxZoom: 16});
 
   L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
       attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -37,7 +37,7 @@ $( document ).ready(function() {
     var geoJsonLayer = L.geoJson(JSON.parse(reports), {
       pointToLayer: function (feature, latlng) {
         var marker = L.marker(latlng, {icon: whichIcon(feature.properties.activity)});
-        marker.bindPopup(feature.properties.title + '<hr>' + feature.properties.created_at + '<hr>' + feature.properties.description).setLatLng(latlng);
+        marker.bindPopup('<h4>' + feature.properties.title + '</h4>' + '<p>' + feature.properties.created_at + '<p>' + '<hr>' + feature.properties.description).setLatLng(latlng);
         return marker;
       }
     });
@@ -135,7 +135,7 @@ $( document ).ready(function() {
 
     var icon = L.icon({
       iconUrl: iconUrl,
-      iconSize:     [70, 55],
+      iconSize:     [55],
       iconAnchor:   [40, 50],
       popupAnchor:  [0, -40]
     });
